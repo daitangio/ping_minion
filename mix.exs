@@ -22,8 +22,10 @@ defmodule PingMinion.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     [applications: [:logger, :httpotion,
+                    :quantum
                     # webbish stuff:
-                    :cowboy, :plug]]
+                    #:cowboy, :plug
+                   ]]
   end
 
   # Dependencies can be Hex packages:
@@ -43,7 +45,9 @@ defmodule PingMinion.Mixfile do
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.11", only: :dev},
       # additional dependencies for a webbish life
-      {:cowboy, "~> 1.0.0"},{:plug, "~> 1.0"}
+      # {:cowboy, "~> 1.0.0"},{:plug, "~> 1.0"},
+      # Cron-like services
+      {:quantum, ">= 1.6.1"}
     ]
   end
 end

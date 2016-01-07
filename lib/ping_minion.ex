@@ -65,6 +65,8 @@ defmodule PingMinion.Scheduler do
     GenServer.cast(server, {:schedule,listOfUrls})
   end
 
+  
+  
   @doc """ 
   Client API: Do the check
   Returns `{:ok, pid}` if all ok, :error otherwise
@@ -73,6 +75,18 @@ defmodule PingMinion.Scheduler do
     GenServer.call(server, {:ping})
   end
 
+
+  def cronSchedule(urls, jobNameAtom) do
+    {:ok, server}=PingMinion.Scheduler.start_link()
+    :ok = PingMinion.Scheduler.schedule(server,urls)
+    job_spec = [
+      schedule: "* * * * *",
+      task: fn(s) ->  PingMinion.Scheduler.ping(s)  end,
+      args: [server],
+      overlap: false
+    ]
+    Quantum.add_job(jobNameAtom,job_spec)
+  end
   
 
   # Server callbacks
