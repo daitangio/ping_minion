@@ -22,3 +22,11 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ## Usage
 (TODO) See Unit test
+## Interactive console (very useful during devel)
+Under windows try out:
+
+    IEX_WITH_WERL=true iex.bat -S mix
+
+To generate the documentation try out
+
+    mix.bat docs

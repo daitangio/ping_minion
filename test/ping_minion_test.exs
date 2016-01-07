@@ -35,7 +35,11 @@ defmodule PingMinionTest do
   # I must decide the api: link  minions, group them?.... bhof....
   # Also the API should hide the GenServer protocol (if needed) 
   test "spawn minions" do
-    
+    # Schedule every minute a list of stuff
+    {:ok, server}=PingMinion.Scheduler.start_link()
+    :ok = PingMinion.Scheduler.schedule(server,[ "http://gioorgi.com", "http://IdonotexistIhopeforsureandsureandubuz.com/"])
+    # How to assert it?
+    [ok: _time1, failed: _time2]  = PingMinion.Scheduler.ping(server)
   end
   
 end

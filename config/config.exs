@@ -21,9 +21,7 @@ use Mix.Config
 #     config :logger, level: :info
 #
 
-config :logger,
- level: :debug,
- truncate: 4096
+config :logger, level: :debug, truncate: 4096
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
