@@ -47,7 +47,8 @@ defmodule PingMinion.Mixfile do
       # additional dependencies for a webbish life
       # {:cowboy, "~> 1.0.0"},{:plug, "~> 1.0"},
       # Cron-like services
-      {:quantum, ">= 1.6.1"}
+      {:quantum, ">= 1.6.1"},
+      {:csv, "~> 1.2.0"}
     ]
   end
 end

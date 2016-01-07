@@ -17,7 +17,12 @@ defmodule PingMinion do
     {:ok}
   end
 
-  
+  @doc """ 
+  Return the url 
+  """
+  def url(minion) do
+    Agent.get(minion, &Map.get(&1, :url))
+  end
   
   @doc """
    Use Erlang :timer.tc/1 function to get microseconds timing (1^10-6 precision)
@@ -28,6 +33,8 @@ defmodule PingMinion do
     {ret,time}
   end
 
+  
+  
   @doc """
    Internal ping function
   """
@@ -75,7 +82,9 @@ defmodule PingMinion.Scheduler do
     GenServer.call(server, {:ping})
   end
 
-
+  @doc """
+  Use Quantum to schedule a job every minute
+  """
   def cronSchedule(urls, jobNameAtom) do
     {:ok, server}=PingMinion.Scheduler.start_link()
     :ok = PingMinion.Scheduler.schedule(server,urls)
@@ -87,9 +96,16 @@ defmodule PingMinion.Scheduler do
     ]
     Quantum.add_job(jobNameAtom,job_spec)
   end
-  
+
+  @doc """
+  Ping the files and store the result on the specified file
+  """
+  def pingAndStore(server, file2Append) do
+    GenServer.call(server, {:pingAndStore, file2Append })
+  end
 
   # Server callbacks
+  # ###########################################
   def init(:ok) do
     Logger.info "PingMinion.Scheduler ready"
     {:ok, %{ :url_list =>[] }}
@@ -132,6 +148,31 @@ defmodule PingMinion.Scheduler do
       acc2
     end)
     # results = Enum.map(minions, fn(m) -> PingMinion.ping(m) end)
+    {:reply, results,  state}
+  end
+
+  def handle_call({:pingAndStore, file2Append}, _from, state ) do
+    require CSV
+    currentList =Map.get(state, :url_list)
+    Logger.info "PING and Store::: Checking #{currentList}"
+    # Build a list of minions and loop async.
+    # Then wait for results.    
+    minions=Enum.map(currentList, fn(u) ->
+      {:ok, bob } =PingMinion.start_link
+      {:ok} = PingMinion.url(bob, u)
+      bob
+    end)
+    
+    file=File.open!(file2Append, [:append, :utf8 ])
+
+    results=Enum.reduce(minions,[], fn(m,acc) ->
+      {result, timeTaken} = PingMinion.ping(m)
+      acc2=acc ++ [ [ PingMinion.url(m), result, timeTaken]]
+      end)
+    
+    results |>
+      CSV.encode(separator: ?;, delimiter: "\n") |>
+      Enum.each(&IO.write(file, &1))
     {:reply, results,  state}
   end
   

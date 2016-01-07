@@ -2,3 +2,5 @@
 /deps
 erl_crash.dump
 *.ez
+ping-test-report.csv
+test.csv

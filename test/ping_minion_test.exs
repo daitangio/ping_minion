@@ -41,7 +41,23 @@ defmodule PingMinionTest do
     # How to assert it?
     [ok: _time1, failed: _time2]  = PingMinion.Scheduler.ping(server)
   end
-  
+
+  test "simple csv encoding" do
+    require CSV
+    file = File.open!("test.csv", [:write])
+    [  ~w( URL RESULT MICROSECONDS),
+       ["Gioorgi.com", "ok", "2000000"] ] |>
+      CSV.encode(separator: ?;, delimiter: "\n") |>
+      Enum.each(&IO.write(file, &1))
+  end
+
+  test "simple storing" do
+    ## TODO REMOVE FILE BEFORE TEST
+    {:ok, server}=PingMinion.Scheduler.start_link()
+    :ok = PingMinion.Scheduler.schedule(server,[ "http://gioorgi.com", "http://IdonotexistIhopeforsureandsureandubuz.com/"])
+    PingMinion.Scheduler.pingAndStore(server,"ping-test-report.csv")
+    ## TODO CHECK FILE EXISTS!
+  end
 end
 # Local variables:
 # mode:elixir
