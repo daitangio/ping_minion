@@ -39,15 +39,21 @@ defmodule PingMinion do
    Internal ping function
   """
   def doPrivatePing(minion) do
+    
     url = Agent.get(minion, &Map.get(&1, :url))
     Logger.info "Checking #{url}"
-    response = HTTPotion.get url
-    success=HTTPotion.Response.success?(response)
-    if success ==true do
-      :ok
-    else
-      #Logger.error "Failed #{response}"
-      :failed
+    try do 
+      response = HTTPotion.get url
+      success=HTTPotion.Response.success?(response)
+      if success ==true do
+        :ok
+      else
+        #Logger.error "Failed #{response}"
+        :failed
+      end
+    rescue
+      HTTPotion.HTTPError ->
+        Logger.error "HTTPotion.HTTPError for #{url}" ;  :failed
     end
   end
 end
@@ -167,7 +173,7 @@ defmodule PingMinion.Scheduler do
 
     results=Enum.reduce(minions,[], fn(m,acc) ->
       {result, timeTaken} = PingMinion.ping(m)
-      acc2=acc ++ [ [ PingMinion.url(m), result, timeTaken]]
+      acc ++ [ [ PingMinion.url(m), result, timeTaken]]
       end)
     
     results |>
