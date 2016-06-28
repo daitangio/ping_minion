@@ -1,4 +1,14 @@
 defmodule PingMinion do
+  @moduledoc """
+Erlang Elixir simple library to check site availability.
+See [the readme file](./readme.html) for examples and a short introduction.
+
+This module is a Ping Minion support. Please refer to PingMinion.Scheduler for public API.
+
+The PingMinion is a stupid yellow mono-eye "thing" which will ping your http web site using the HTTPotion libray.
+You can spawn plenty of them.
+"""
+  
   require Logger
   
   @doc """
@@ -10,7 +20,7 @@ defmodule PingMinion do
   end
 
   @doc """
-  Provide the url the minion must check
+  Set the url the minion must check
   """
   def url(minion, url2Check) do
     Agent.update(minion, &Map.put(&1, :url, url2Check))
@@ -62,6 +72,10 @@ defmodule PingMinion do
 end
 
 defmodule PingMinion.Scheduler do
+  @moduledoc """
+PingMinion.Scheduler provide a convenient public API.
+It uses a GenServer behavior.
+"""
   use GenServer
   require Logger
   
@@ -128,7 +142,7 @@ defmodule PingMinion.Scheduler do
     Logger.debug "Adding #{urlList}"
     currentList =Map.get(state, :url_list)
     newList= currentList ++ urlList
-    Logger.info "New Url List: #{newList}"
+    Logger.info "New Url List: #{inspect newList}"
     newState=Map.put(state, :url_list, newList)
     {:noreply, newState}
   end

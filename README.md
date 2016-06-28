@@ -1,6 +1,6 @@
 # PingMinion
 
-Erlang Elixir simple library to check site availability.
+Erlang Elixir simple library to check site availability via http request
 Is it my first Elixir project, so it is also a learning gym.
 
 
@@ -11,7 +11,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
   1. Add ping_minion to your list of dependencies in `mix.exs`:
 
         def deps do
-          [{:ping_minion, "~> 0.0.1"}]
+          [{:ping_minion, "~> 0.0.2"}]
         end
 
   2. Ensure ping_minion is started before your application:
@@ -25,7 +25,6 @@ The most usual use case is to schedule a list of site to check:
 
     {:ok, server}=PingMinion.Scheduler.start_link()
     :ok = PingMinion.Scheduler.schedule(server,[ "http://gioorgi.com","http://IdonotexistIhopeforsureandsureandubuz.com/"])
-    # How to assert it?
     [ok: _time1, failed: _time2]  = PingMinion.Scheduler.ping(server)
     
 Also, it is possible to save data on a csv based file for further

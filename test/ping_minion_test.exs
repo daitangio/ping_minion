@@ -59,13 +59,13 @@ defmodule PingMinionTest do
     ## TODO CHECK FILE EXISTS!
   end
 
-  test "timeout test" do
-    # timeout in milliseconds
-    op= [ :timeout , 70000 ]
-    r=HTTPotion.get "http://www.yahoo.com",op 
-    s=HTTPotion.Response.success?(r)
-    assert s==true
-  end
+  # test "potion_timeout" do
+  #   # timeout in milliseconds
+  #   op= [ :timeout , 70000 ]
+  #   r=HTTPotion.get "http://www.yahoo.com", op 
+  #   s=HTTPotion.Response.success?(r)
+  #   assert s==true
+  # end
   
   
 end
