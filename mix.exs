@@ -3,15 +3,15 @@ defmodule PingMinion.Mixfile do
 
   def project do
     [app: :ping_minion,
+     version: "0.0.2",
      # doc stuff
-     source_url: "https://github.com/USER/REPO",
-     homepage_url: "http://YOUR_PROJECT_HOMEPAGE",
+     source_url: "https://github.com/daitangio/ping_minion",
+     homepage_url: "http://gioorgi.com/tag/ping_minion",
      docs: [
-       extras: ["README.md"]
+       extras: [ "README.md"  ]
      ],
-     # end doc stuff
-     version: "0.0.1",
-     elixir: "~> 1.2",
+     # end doc stuff     
+     elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps]
@@ -39,15 +39,14 @@ defmodule PingMinion.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
-      {:httpotion, "~> 2.1.0"},
+      {:httpotion, "~> 3.0"},
       # Documentation
-      {:earmark, "~> 0.1", only: :dev},
-      {:ex_doc, "~> 0.11", only: :dev},
+      {:earmark, "~> 0.2", only: :dev},
+      {:ex_doc, "~> 0.12", only: :dev},
       # additional dependencies for a webbish life
       # {:cowboy, "~> 1.0.0"},{:plug, "~> 1.0"},
       # Cron-like services
-      {:quantum, ">= 1.6.1"},
+      {:quantum, ">= 1.7.1"},
       {:csv, "~> 1.2.0"}
     ]
   end

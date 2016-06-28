@@ -42,7 +42,10 @@ defmodule PingMinion do
     
     url = Agent.get(minion, &Map.get(&1, :url))
     Logger.info "Checking #{url}"
-    try do 
+    try do
+      # GG Eval adding timeout....but below 5secs because gen server seems to have timeouts
+      #options= [ :timeout , 4000 ]
+      #response = HTTPotion.get url, options
       response = HTTPotion.get url
       success=HTTPotion.Response.success?(response)
       if success ==true do
