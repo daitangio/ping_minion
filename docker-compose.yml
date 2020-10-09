@@ -1,0 +1,5 @@
+version: '2'
+
+services:
+    elixir_pinger:
+        image: elixir:1.9.4

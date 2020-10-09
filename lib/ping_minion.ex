@@ -52,22 +52,21 @@ You can spawn plenty of them.
     
     url = Agent.get(minion, &Map.get(&1, :url))
     Logger.info "Checking #{url}"
-    try do
-      # GG Eval adding timeout....but below 5secs because gen server seems to have timeouts
-      #options= [ :timeout , 4000 ]
-      #response = HTTPotion.get url, options
-      response = HTTPotion.get url
-      success=HTTPotion.Response.success?(response)
-      if success ==true do
-        :ok
-      else
-        #Logger.error "Failed #{response}"
-        :failed
-      end
-    rescue
-      HTTPotion.HTTPError ->
-        Logger.error "HTTPotion.HTTPError for #{url}" ;  :failed
+
+    # Tesla https://github.com/teamon/tesla
+    # GG Eval adding timeout....but below 5secs because gen server seems to have timeouts
+    #options= [ :timeout , 4000 ]
+    #response = HTTPotion.get url, options
+    #response = HTTPotion.get url
+    {:ok, response} = Tesla.get(url)      
+    if response.status == 200 || response.status == 301 do
+      :ok
+    else
+      Logger.error "Failed #{url} Response: #{response.status}"
+      # Hum a 503 could be retunred by some home ISP which resolve everything to a custom server
+      :failed
     end
+
   end
 end
 
@@ -105,20 +104,7 @@ It uses a GenServer behavior.
     GenServer.call(server, {:ping})
   end
 
-  @doc """
-  Use Quantum to schedule a job every minute
-  """
-  def cronSchedule(urls, jobNameAtom) do
-    {:ok, server}=PingMinion.Scheduler.start_link()
-    :ok = PingMinion.Scheduler.schedule(server,urls)
-    job_spec = [
-      schedule: "* * * * *",
-      task: fn(s) ->  PingMinion.Scheduler.ping(s)  end,
-      args: [server],
-      overlap: false
-    ]
-    Quantum.add_job(jobNameAtom,job_spec)
-  end
+
 
   @doc """
   Ping the files and store the result on the specified file
