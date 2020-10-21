@@ -23,7 +23,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ## Usage
 The most usual use case is to schedule a list of site to check:
-
+    $ iex -S mix
     {:ok, server}=PingMinion.Scheduler.start_link()
     :ok = PingMinion.Scheduler.schedule(server,[ "http://gioorgi.com","http://IdonotexistIhopeforsureandsureandubuz.com/"])
     [ok: _time1, failed: _time2]  = PingMinion.Scheduler.ping(server)
@@ -64,6 +64,12 @@ Try out
 
 
 # Revision history
+
+## 2020/10 Ping Minion 1.0.3 /TOBE/
+
+* Migrated to Elixir 1.9.x
+* Removed Quantum dependency (unable to get it working)
+  API changed
 
 ## 2016/06/28 Ping Minion 0.0.2 code name: "herbert"
 

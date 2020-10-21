@@ -2,4 +2,7 @@ version: '2'
 
 services:
     elixir_pinger:
-        image: elixir:1.9.4
+        image: ping-minion-dev:0.0.2
+        build:
+            context: .
+        

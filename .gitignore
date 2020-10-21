@@ -5,3 +5,5 @@ erl_crash.dump
 ping-test-report.csv
 test.csv
 doc/
+.devcontainer
+mix.lock
