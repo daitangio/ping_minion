@@ -14,17 +14,14 @@ defmodule PingMinion.Mixfile do
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :httpotion,
-                    :quantum
-                    # webbish stuff:
-                    #:cowboy, :plug
+    [applications: [:logger, :tesla
                    ]]
   end
 
@@ -38,15 +35,11 @@ defmodule PingMinion.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [
-      {:httpotion, "~> 3.0"},
+    [      
+      {:tesla, "~> 1.3.0"},
       # Documentation
       {:earmark, "~> 0.2", only: :dev},
       {:ex_doc, "~> 0.12", only: :dev},
-      # additional dependencies for a webbish life
-      # {:cowboy, "~> 1.0.0"},{:plug, "~> 1.0"},
-      # Cron-like services
-      {:quantum, ">= 1.7.1"},
       {:csv, "~> 1.2.0"}
     ]
   end

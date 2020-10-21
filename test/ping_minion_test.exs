@@ -54,6 +54,15 @@ defmodule PingMinionTest do
   test "simple storing" do
     ## TODO REMOVE FILE BEFORE TEST
     {:ok, server}=PingMinion.Scheduler.start_link()
+    :ok = PingMinion.Scheduler.schedule(server,[ "http://gioorgi.com"])
+    PingMinion.Scheduler.pingAndStore(server,"ping-test-report.csv")
+    ## TODO CHECK FILE EXISTS!
+  end
+
+
+  test "simple storing2" do
+    ## TODO REMOVE FILE BEFORE TEST
+    {:ok, server}=PingMinion.Scheduler.start_link()
     :ok = PingMinion.Scheduler.schedule(server,[ "http://gioorgi.com", "http://IdonotexistIhopeforsureandsureandubuz.com/"])
     PingMinion.Scheduler.pingAndStore(server,"ping-test-report.csv")
     ## TODO CHECK FILE EXISTS!

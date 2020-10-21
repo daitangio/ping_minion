@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+    elixir_pinger:
+        image: ping-minion-dev:0.0.2
+        build:
+            context: .
+        
