@@ -36,7 +36,7 @@ defmodule PingMinion.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [      
-      {:tesla, "~> 1.3.0"},
+      {:tesla, "~> 1.3.3"},
       # Documentation
       {:earmark, "~> 0.2", only: :dev},
       {:ex_doc, "~> 0.12", only: :dev},

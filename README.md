@@ -70,7 +70,9 @@ Try out
 * Migrated to Elixir 1.9.x
 * Removed Quantum dependency (unable to get it working)
   API changed
-
+* Known bugs
+  First connection is alwys slower for no good reason so far
+  
 ## 2016/06/28 Ping Minion 0.0.2 code name: "herbert"
 
 *  Migrated to Elixir 1.3

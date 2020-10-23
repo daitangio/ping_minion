@@ -5,12 +5,14 @@ See [the readme file](./readme.html) for examples and a short introduction.
 
 This module is a Ping Minion support. Please refer to PingMinion.Scheduler for public API.
 
-The PingMinion is a stupid yellow mono-eye "thing" which will ping your http web site using the HTTPotion libray.
+The PingMinion is a stupid yellow mono-eye "thing" which will ping your http web site using the Tesla libray.
 You can spawn plenty of them.
 """
   
   require Logger
   
+
+
   @doc """
   Starts a new Ping-orinented minion.
   """
@@ -24,7 +26,23 @@ You can spawn plenty of them.
   """
   def url(minion, url2Check) do
     Agent.update(minion, &Map.put(&1, :url, url2Check))
+    Agent.update(minion, &Map.put(&1, :tesla_client, makeTeslaClient(url2Check)))
     {:ok}
+  end
+
+  @doc """ 
+  Build dynamic client based on runtime arguments
+  A timeout can be specified
+  Also a logger can be added
+  See
+  https://hexdocs.pm/tesla/readme.html#runtime-middleware
+  """
+  def makeTeslaClient(url) do
+    middleware = [
+      {Tesla.Middleware.BaseUrl, url},
+      {Tesla.Middleware.Timeout, timeout: 4_000}
+    ]
+    Tesla.client(middleware)
   end
 
   @doc """ 
@@ -44,6 +62,8 @@ You can spawn plenty of them.
   end
 
   
+
+
   
   @doc """
    Internal ping function
@@ -52,21 +72,28 @@ You can spawn plenty of them.
     
     url = Agent.get(minion, &Map.get(&1, :url))
     Logger.info "Checking #{url}"
-
+    client=Agent.get(minion, &Map.get(&1, :tesla_client))
+    
     # Tesla https://github.com/teamon/tesla
-    # GG Eval adding timeout....but below 5secs because gen server seems to have timeouts
-    #options= [ :timeout , 4000 ]
-    #response = HTTPotion.get url, options
-    #response = HTTPotion.get url
-    {:ok, response} = Tesla.get(url)      
-    if response.status == 200 || response.status == 301 do
-      :ok
+   
+    {error_or_ok, response} = Tesla.head(client, url)      
+    Logger.info "#{error_or_ok}"
+    if error_or_ok == :ok do
+      if response.status == 200 || response.status == 301 do
+        :ok
+      else
+        Logger.error "Failed #{url} Response: #{response.status}"
+        # Hum a 503 could be retunred by some home ISP which resolve everything to a custom server
+        :failed
+      end
     else
-      Logger.error "Failed #{url} Response: #{response.status}"
-      # Hum a 503 could be retunred by some home ISP which resolve everything to a custom server
-      :failed
+      Logger.error "Error Reason #{response}"
+      if response == :timeout do
+        :failed_for_timeout
+      else
+        :failed
+      end 
     end
-
   end
 end
 
