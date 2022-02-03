@@ -10,7 +10,7 @@ defmodule PingMinion.Mixfile do
      docs: [
        extras: [ "README.md"  ]
      ],
-     # end doc stuff     
+     # end doc stuff
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -35,11 +35,11 @@ defmodule PingMinion.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [      
+    [
       {:tesla, "~> 1.3.3"},
-      # Documentation
-      {:earmark, "~> 0.2", only: :dev},
-      {:ex_doc, "~> 0.12", only: :dev},
+      # Documentation: There are trouble on this modules
+      # {:earmark, "~> 0.2", only: :dev},
+      {:ex_doc, "~> 0.28.0", only: :dev},
       {:csv, "~> 1.2.0"}
     ]
   end

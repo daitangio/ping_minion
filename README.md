@@ -23,6 +23,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ## Usage
 The most usual use case is to schedule a list of site to check:
+
     $ iex -S mix
     {:ok, server}=PingMinion.Scheduler.start_link()
     :ok = PingMinion.Scheduler.schedule(server,[ "http://gioorgi.com","http://IdonotexistIhopeforsureandsureandubuz.com/"])
@@ -38,6 +39,13 @@ processing:
 The file wil have tre column: url, result and time taken in
 microsecond (1^10-6 precision).
 See the "simple csv encoding" test for a more complete example.
+
+# Developing
+
+Refer to Dockerfile for an example of a dockerized development enviornment.
+To test drive try
+
+  iex -S mix < test-loop.exs 
 
 ## Known issue
 ### hackney compilation trouble
