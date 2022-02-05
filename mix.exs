@@ -39,7 +39,7 @@ defmodule PingMinion.Mixfile do
       {:tesla, "~> 1.3.3"},
       # Documentation: There are trouble on this modules
       # {:earmark, "~> 0.2", only: :dev},
-      {:ex_doc, "~> 0.28.0", only: :dev},
+      # {:ex_doc, "~> 0.28.0", only: :dev},
       {:csv, "~> 1.2.0"}
     ]
   end

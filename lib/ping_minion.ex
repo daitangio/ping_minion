@@ -8,16 +8,16 @@ This module is a Ping Minion support. Please refer to PingMinion.Scheduler for p
 The PingMinion is a stupid yellow mono-eye "thing" which will ping your http web site using the Tesla libray.
 You can spawn plenty of them.
 """
-  
+
   require Logger
-  
+
 
 
   @doc """
   Starts a new Ping-orinented minion.
   """
   def start_link do
-    # Our minion is a map %{} :) 
+    # Our minion is a map %{} :)
     Agent.start_link(fn -> %{} end)
   end
 
@@ -30,7 +30,7 @@ You can spawn plenty of them.
     {:ok}
   end
 
-  @doc """ 
+  @doc """
   Build dynamic client based on runtime arguments
   A timeout can be specified
   Also a logger can be added
@@ -45,13 +45,13 @@ You can spawn plenty of them.
     Tesla.client(middleware)
   end
 
-  @doc """ 
-  Return the url 
+  @doc """
+  Return the url
   """
   def url(minion) do
     Agent.get(minion, &Map.get(&1, :url))
   end
-  
+
   @doc """
    Use Erlang :timer.tc/1 function to get microseconds timing (1^10-6 precision)
    Do not provide error reason
@@ -61,22 +61,22 @@ You can spawn plenty of them.
     {ret,time}
   end
 
-  
 
 
-  
+
+
   @doc """
    Internal ping function
   """
   def doPrivatePing(minion) do
-    
+
     url = Agent.get(minion, &Map.get(&1, :url))
     Logger.info "Checking #{url}"
     client=Agent.get(minion, &Map.get(&1, :tesla_client))
-    
+
     # Tesla https://github.com/teamon/tesla
-   
-    {error_or_ok, response} = Tesla.head(client, url)      
+
+    {error_or_ok, response} = Tesla.head(client, url)
     Logger.info "#{error_or_ok}"
     if error_or_ok == :ok do
       if response.status == 200 || response.status == 301 do
@@ -92,7 +92,7 @@ You can spawn plenty of them.
         :failed_for_timeout
       else
         :failed
-      end 
+      end
     end
   end
 end
@@ -104,15 +104,15 @@ It uses a GenServer behavior.
 """
   use GenServer
   require Logger
-  
+
   #### Client API
 
   def start_link() do
     GenServer.start_link(__MODULE__, :ok, [])
   end
 
-  
-  
+
+
   @doc """
   Client API:
   Schedule a list of url to check
@@ -121,9 +121,9 @@ It uses a GenServer behavior.
     GenServer.cast(server, {:schedule,listOfUrls})
   end
 
-  
-  
-  @doc """ 
+
+
+  @doc """
   Client API: Do the check
   Returns `{:ok, pid}` if all ok, :error otherwise
   """
@@ -172,7 +172,7 @@ It uses a GenServer behavior.
     currentList =Map.get(state, :url_list)
     Logger.info "PING::: Checking #{currentList}"
     # Build a list of minions and loop async.
-    # Then wait for results.    
+    # Then wait for results.
     minions=Enum.map(currentList, fn(u) ->
       {:ok, bob } =PingMinion.start_link
       {:ok} = PingMinion.url(bob, u)
@@ -192,26 +192,36 @@ It uses a GenServer behavior.
     currentList =Map.get(state, :url_list)
     Logger.info "PING and Store::: Checking #{currentList}"
     # Build a list of minions and loop async.
-    # Then wait for results.    
+    # Then wait for results.
     minions=Enum.map(currentList, fn(u) ->
       {:ok, bob } =PingMinion.start_link
       {:ok} = PingMinion.url(bob, u)
       bob
     end)
-    
+
     file=File.open!(file2Append, [:append, :utf8 ])
 
     results=Enum.reduce(minions,[], fn(m,acc) ->
       {result, timeTaken} = PingMinion.ping(m)
       acc ++ [ [ PingMinion.url(m), result, timeTaken]]
       end)
-    
+
     results |>
       CSV.encode(separator: ?;, delimiter: "\n") |>
       Enum.each(&IO.write(file, &1))
     {:reply, results,  state}
   end
-  
+
+  # Ref See https://blog.kommit.co/3-ways-to-schedule-tasks-in-elixir-i-learned-in-3-years-working-with-it-a6ca94e9e71d
+  # @impl true
+  def handle_info(:cron, state) do
+    do_recurrent_thing(state)
+    {:noreply, state}
+  end
+
+  defp do_recurrent_thing(_state) do
+    Logger.info "Recurring ping... Not yet implemented"
+  end
 end
 # Local variables:
 # mode:elixir

@@ -4,3 +4,6 @@
 PingMinion.Scheduler.ping(server)
 
 PingMinion.Scheduler.pingAndStore(server,"ping-report.csv")
+
+# Milliseconds...
+:timer.send_interval(2_000, server, :cron)
